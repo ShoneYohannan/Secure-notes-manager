@@ -109,6 +109,30 @@ http://127.0.0.1:8000/docs
 
 ---
 
+
+## Screenshots
+
+### Login Page
+
+![Login Page](screenshots/Login.png)
+
+### Registration Page
+
+![Register Page](screenshots/Register.png)
+
+### Notes Dashboard
+
+![Dashboard](screenshots/Dashboard.png)
+
+### API Documentation
+
+![Swagger Docs](screenshots/Swagger-docs.png)
+
+### MongoDB Atlas Integration
+
+![MongoDB Atlas](screenshots/mongodb-atlas-overview.png)
+
+
 ## Author
 
 Developed by **Shone Yohannan**
