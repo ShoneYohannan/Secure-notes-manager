@@ -133,6 +133,9 @@ http://127.0.0.1:8000/docs
 ![MongoDB Atlas](screenshots/mongodb-atlas-overview.png)
 
 
+Built with FastAPI, MongoDB Atlas, JWT Authentication and React.
+
+
 ## Author
 
 Developed by **Shone Yohannan**
