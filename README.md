@@ -114,23 +114,23 @@ http://127.0.0.1:8000/docs
 
 ### Login Page
 
-![Login Page](screenshots/Login.png)
+![Login Page](Screenshots/Login.png)
 
 ### Registration Page
 
-![Register Page](screenshots/Register.png)
+![Register Page](Screenshots/Register.png)
 
 ### Notes Dashboard
 
-![Dashboard](screenshots/Dashboard.png)
+![Dashboard](Screenshots/Dashboard.png)
 
 ### API Documentation
 
-![Swagger Docs](screenshots/Swagger-docs.png)
+![Swagger Docs](Screenshots/Swagger-docs.png)
 
 ### MongoDB Atlas Integration
 
-![MongoDB Atlas](screenshots/mongodb-atlas-overview.png)
+![MongoDB Atlas](Screenshots/mongodb-atlas-overview.png)
 
 
 Built with FastAPI, MongoDB Atlas, JWT Authentication and React.
