@@ -1,4 +1,6 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.schemas import UserRegister, UserLogin
 from app.auth import hash_password, verify_password, create_access_token
 from app.database import users_collection
@@ -15,6 +17,14 @@ app = FastAPI(
     version="1.0.0"
 )
 security = HTTPBearer()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
