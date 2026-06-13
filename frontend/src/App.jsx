@@ -67,22 +67,30 @@ function App() {
       return;
     }
 
-    await axios.post(`${API}/notes`, note, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      await axios.post(`${API}/notes`, note, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    setNote({ title: "", content: "" });
-    setMessage("Note created successfully");
-    fetchNotes();
+      setNote({ title: "", content: "" });
+      setMessage("Note created successfully");
+      fetchNotes();
+    } catch {
+      setMessage("Could not create note");
+    }
   };
 
   const deleteNote = async (id) => {
-    await axios.delete(`${API}/notes/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      await axios.delete(`${API}/notes/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    setMessage("Note deleted");
-    fetchNotes();
+      setMessage("Note deleted");
+      fetchNotes();
+    } catch {
+      setMessage("Could not delete note");
+    }
   };
 
   const logout = () => {
@@ -92,29 +100,29 @@ function App() {
     setMessage("");
   };
 
- if (loading) {
-  return (
-    <div className="loader-page">
-      <div className="book-loader">
-        <div className="book-cover"></div>
-        <div className="book-page">
-          <div className="page-line line1"></div>
-          <div className="page-line line2"></div>
-          <div className="page-line line3"></div>
+  if (loading) {
+    return (
+      <div className="loader-page">
+        <div className="book-loader">
+          <div className="book-cover"></div>
+          <div className="book-page">
+            <div className="page-line line1"></div>
+            <div className="page-line line2"></div>
+            <div className="page-line line3"></div>
+          </div>
+          <div className="book-rings">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
         </div>
-        <div className="book-rings">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </div>
 
-      <h2>Secure Notes</h2>
-      <p>Opening your private workspace...</p>
-    </div>
-  );
-}
+        <h2>Secure Notes</h2>
+        <p>Opening your private workspace...</p>
+      </div>
+    );
+  }
 
   if (!token) {
     return (
@@ -126,7 +134,8 @@ function App() {
               <span>Secure Notes</span>
             </div>
 
-            <h1>{mode === "login" ? "Welcome back" : "Create account"}</h1><br></br>
+            <h1>{mode === "login" ? "Welcome back" : "Create account"}</h1>
+
             <p>
               {mode === "login"
                 ? "Sign in to manage your secure notes."
@@ -176,25 +185,51 @@ function App() {
             {message && <p className="message">{message}</p>}
           </div>
 
-          <div className="auth-right">
-            <h2>Your private notes, secured.</h2>
-            <p>JWT authentication, MongoDB Atlas, and protected APIs.</p>
+          <div className="auth-right notes-preview">
+            <div className="glow-circle one"></div>
+            <div className="glow-circle two"></div>
 
-            <div className="mock-dashboard">
-              <div className="mock-sidebar"></div>
-              <div className="mock-content">
-                <div className="mock-card wide"></div>
-                <div className="mock-row">
-                  <div className="mock-card"></div>
-                  <div className="mock-card"></div>
-                </div>
-                <div className="mock-note"></div>
-                <div className="mock-note small"></div>
+            <div className="secure-icon">
+              <span>✓</span>
+            </div>
+
+            <h2>Secure Notes</h2>
+
+            <p>
+              A protected notes workspace with login, JWT authentication, and
+              user-specific notes.
+            </p>
+
+            <div className="note-editor-preview">
+              <div className="editor-top">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+
+              <div className="editor-title">Today’s Plan</div>
+
+              <div className="editor-line long"></div>
+              <div className="editor-line medium"></div>
+              <div className="editor-line short"></div>
+
+              <div className="typing-row">
+                <span className="typing-text">
+                  Only authenticated users can access notes
+                </span>
+              </div>
+
+              <div className="editor-footer">
+                <span>Auto saved</span>
+                <button>Protected</button>
               </div>
             </div>
 
-            <div className="floating-card one">JWT Auth</div>
-            <div className="floating-card two">MongoDB</div>
+            <div className="feature-row">
+              <div className="feature-pill">JWT Auth</div>
+              <div className="feature-pill">MongoDB</div>
+              <div className="feature-pill">CRUD API</div>
+            </div>
           </div>
         </div>
       </div>
@@ -249,7 +284,9 @@ function App() {
 
         <div className="notes-grid">
           {notes.length === 0 ? (
-            <div className="empty-state">No notes yet. Create your first note.</div>
+            <div className="empty-state">
+              No notes yet. Create your first note.
+            </div>
           ) : (
             notes.map((n) => (
               <div className="note-card" key={n.id}>
