@@ -11,10 +11,19 @@ function App() {
   const [note, setNote] = useState({ title: "", content: "" });
   const [notes, setNotes] = useState([]);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (token) fetchNotes(token);
   }, [token]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1800);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const register = async () => {
     try {
@@ -58,30 +67,22 @@ function App() {
       return;
     }
 
-    try {
-      await axios.post(`${API}/notes`, note, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    await axios.post(`${API}/notes`, note, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-      setNote({ title: "", content: "" });
-      setMessage("Note created successfully");
-      fetchNotes();
-    } catch {
-      setMessage("Could not create note");
-    }
+    setNote({ title: "", content: "" });
+    setMessage("Note created successfully");
+    fetchNotes();
   };
 
   const deleteNote = async (id) => {
-    try {
-      await axios.delete(`${API}/notes/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    await axios.delete(`${API}/notes/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-      setMessage("Note deleted");
-      fetchNotes();
-    } catch {
-      setMessage("Could not delete note");
-    }
+    setMessage("Note deleted");
+    fetchNotes();
   };
 
   const logout = () => {
@@ -91,11 +92,35 @@ function App() {
     setMessage("");
   };
 
+ if (loading) {
+  return (
+    <div className="loader-page">
+      <div className="book-loader">
+        <div className="book-cover"></div>
+        <div className="book-page">
+          <div className="page-line line1"></div>
+          <div className="page-line line2"></div>
+          <div className="page-line line3"></div>
+        </div>
+        <div className="book-rings">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <h2>Secure Notes</h2>
+      <p>Opening your private workspace...</p>
+    </div>
+  );
+}
+
   if (!token) {
     return (
-      <div className="auth-page fade-in">
-        <div className="auth-card pop-in">
-          <div className="auth-left slide-up">
+      <div className="auth-page">
+        <div className="auth-card">
+          <div className="auth-left">
             <div className="brand">
               <div className="logo">SN</div>
               <span>Secure Notes</span>
@@ -110,7 +135,6 @@ function App() {
 
             {mode === "register" && (
               <input
-                className="input-animate"
                 placeholder="Name"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -118,21 +142,22 @@ function App() {
             )}
 
             <input
-              className="input-animate"
               placeholder="Email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
             />
 
             <input
-              className="input-animate"
               type="password"
               placeholder="Password"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
             />
 
-            <button className="btn-animate" onClick={mode === "login" ? login : register}>
+            <button
+              className="premium-btn"
+              onClick={mode === "login" ? login : register}
+            >
               {mode === "login" ? "Login" : "Create Account"}
             </button>
 
@@ -148,23 +173,23 @@ function App() {
                 : "Already have an account? Login"}
             </button>
 
-            {message && <p className="message fade-in">{message}</p>}
+            {message && <p className="message">{message}</p>}
           </div>
 
-          <div className="auth-right slide-left">
+          <div className="auth-right">
             <h2>Your private notes, secured.</h2>
             <p>JWT authentication, MongoDB Atlas, and protected APIs.</p>
 
-            <div className="mock-dashboard float-animation">
+            <div className="mock-dashboard">
               <div className="mock-sidebar"></div>
               <div className="mock-content">
-                <div className="mock-card wide shimmer"></div>
+                <div className="mock-card wide"></div>
                 <div className="mock-row">
-                  <div className="mock-card shimmer"></div>
-                  <div className="mock-card shimmer"></div>
+                  <div className="mock-card"></div>
+                  <div className="mock-card"></div>
                 </div>
-                <div className="mock-note shimmer"></div>
-                <div className="mock-note small shimmer"></div>
+                <div className="mock-note"></div>
+                <div className="mock-note small"></div>
               </div>
             </div>
 
@@ -177,22 +202,23 @@ function App() {
   }
 
   return (
-    <div className="dashboard-page fade-in">
-      <aside className="sidebar slide-right">
+    <div className="dashboard-page">
+      <aside className="sidebar">
         <div className="brand white">
           <div className="logo">SN</div>
           <span>Secure Notes</span>
         </div>
 
-        <button className="btn-animate" onClick={() => fetchNotes()}>
+        <button className="sidebar-btn" onClick={() => fetchNotes()}>
           Refresh Notes
         </button>
+
         <button className="logout-btn" onClick={logout}>
           Logout
         </button>
       </aside>
 
-      <main className="main-area slide-up">
+      <main className="main-area">
         <div className="topbar">
           <div>
             <h1>My Notes</h1>
@@ -201,7 +227,7 @@ function App() {
           <span>{notes.length} notes</span>
         </div>
 
-        <div className="create-box pop-in">
+        <div className="create-box">
           <input
             placeholder="Note title"
             value={note.title}
@@ -214,28 +240,24 @@ function App() {
             onChange={(e) => setNote({ ...note, content: e.target.value })}
           />
 
-          <button className="btn-animate" onClick={createNote}>
+          <button className="premium-btn" onClick={createNote}>
             Add Note
           </button>
         </div>
 
-        {message && <p className="message dashboard-msg fade-in">{message}</p>}
+        {message && <p className="message dashboard-msg">{message}</p>}
 
         <div className="notes-grid">
           {notes.length === 0 ? (
-            <div className="empty-state fade-in">
-              No notes yet. Create your first note.
-            </div>
+            <div className="empty-state">No notes yet. Create your first note.</div>
           ) : (
-            notes.map((n, index) => (
-              <div
-                className="note-card note-animate"
-                key={n.id}
-                style={{ animationDelay: `${index * 0.08}s` }}
-              >
+            notes.map((n) => (
+              <div className="note-card" key={n.id}>
                 <h3>{n.title}</h3>
                 <p>{n.content}</p>
-                <button onClick={() => deleteNote(n.id)}>Delete</button>
+                <button className="delete-btn" onClick={() => deleteNote(n.id)}>
+                  Delete
+                </button>
               </div>
             ))
           )}
